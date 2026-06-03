@@ -12,7 +12,7 @@ I wanted near-instant delivery when something breaks. So the frontend polls ever
 
 ```mermaid
 flowchart LR
-    S["5 Sources"] --> F["Fetch & Score"]
+    S["Sources"] --> F["Fetch & Score"]
     F --> C["Cache (60s)"]
     C --> A["/api/news"]
     A --> B["Browser (10s poll)"]
