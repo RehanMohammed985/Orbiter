@@ -10,14 +10,14 @@ Orbiter is my answer to that. It pulls from a handful of high-signal outlets (Ha
 
 ## Pipeline
 
-```
-Sources                          Server                          Frontend
-─────────                        ──────                          ────────
-Hacker News API ─┐
-TechCrunch RSS   ─┤   ┌──────────────────────────┐     ┌──────────────────┐
-Ars Technica RSS ─┼──▶│ Fetch → Score → Categorize│────▶│ 10s poll → Render│
-The Verge RSS    ─┤   │   Cache (60s refresh)    │     │ Hero bar + List  │
-NYT Tech RSS     ─┘   └──────────────────────────┘     └──────────────────┘
+```mermaid
+flowchart LR
+    S["5 Sources"] --> F["Fetch & Score"]
+    F --> C["Cache (60s)"]
+    C --> A["/api/news"]
+    A --> B["Browser (10s poll)"]
+    B --> H["Breaking Bar ≥20"]
+    B --> L["Day-Grouped List"]
 ```
 
 **Scoring:** Each story gets +10 per signal (company mention, event keyword, AI model match). Exclusion keywords (deals, reviews, tutorials) auto-reject. Score ≥ 10 passes, ≥ 20 hits the breaking hero bar.
@@ -27,11 +27,6 @@ NYT Tech RSS     ─┘   └─────────────────
                                                                          ↓
                                                                    ≥ 20? → Breaking bar
                                                                    < 20? → Day-grouped list
-```
-
-**Cycle:**
-```
-Server refreshes every 60s ──▶ Browser polls every 10s ──▶ New stories animate in
 ```
 
 - **5 sources** → ~85 raw → relevance filter → ~34 stories
