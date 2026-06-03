@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>news</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+  <header>
+    <div class="h-top">
+      <div class="h-left">
+        <span class="logo">◆</span>
+        <span class="logo-text">news</span>
+      </div>
+      <div class="h-center">
+        <span id="count" class="count">0</span>
+        <span class="count-label">stories</span>
+      </div>
+      <div class="h-right">
+        <span id="clockdate" class="dt"></span>
+        <span id="clocktime" class="tm">--:--:--</span>
+      </div>
+    </div>
+    <div class="h-bottom">
+      <div class="filters" id="filterBar">
+        <button class="f-btn active" data-filter="all">All</button>
+        <button class="f-btn" data-filter="cs">CS</button>
+        <button class="f-btn" data-filter="ai">AI</button>
+        <button class="f-btn" data-filter="ml">ML</button>
+        <button class="f-btn" data-filter="startups">Startups</button>
+      </div>
+      <div class="h-meta">
+        <span id="panelCount" class="pc"></span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div id="newsList" class="list"></div>
+    <div id="loading" class="loading"><span class="blink">_</span> loading</div>
+    <div id="empty" class="empty hidden">no stories</div>
+  </main>
+
+  <footer>
+    <span id="lastFetch" class="fetch-status">—</span>
+    <span class="src-badge">9 sources</span>
+    <button id="notifBtn" class="notif">notifications</button>
+  </footer>
+
+  <div id="toast" class="toast hidden"><span id="toastMsg"></span></div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
