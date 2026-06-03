@@ -1,12 +1,12 @@
 # Orbiter
 
-A real-time news dashboard for the engineering mind. Built to cut through the noise.
+I got tired of wading through listicles and deals to find the 3 tech stories that actually mattered. So I hardcoded this.
 
-## Why Orbiter
+## Why
 
-I read a lot of news. Probably too much. The problem isn't finding news — it's that there's always too much. Deals, reviews, listicles, tutorials, puff pieces — they all compete for the same attention as the signal.
+Pulls from HN, TechCrunch, Ars, The Verge, NYT Tech. Every story gets scored — company mentions, event keywords, AI model names. Each hit adds 10 points. Listicle/deal/review keywords auto-reject at -20. Nothing passes unless it scores ≥ 10. That's the filter. Hardcoded, no exceptions.
 
-Orbiter is my answer to that. It pulls from a handful of high-signal outlets (Hacker News, TechCrunch, Ars Technica, The Verge, NYT Tech), runs every story through a relevance filter, and only surfaces what actually matters for someone building things in tech. No fluff. No clickbait. No noise.
+I wanted near-instant delivery when something breaks. So the frontend polls every 10 seconds. Server refreshes every 60. Day-grouped layout. Breaking stories (score ≥ 20) get their own row at the top with hover summaries. All hardcoded into a single HTML file — zero dependencies, ready to drop into a macOS widget.
 
 ## Pipeline
 
@@ -37,19 +37,19 @@ flowchart LR
 - **Breaking hero bar** — score ≥ 20 stories get dedicated cards with hover previews
 - **Live indicator** — pulsing dot + timestamp so you know it's live
 
-## What's next
+## Next
 
-Built as a single self-contained HTML file (all CSS/JS inline) — ready to drop into Übersicht or a native SwiftUI WidgetKit panel.
+The entire frontend is one HTML file with everything inlined. I built it this way so I can drop it straight into Übersicht or a WidgetKit panel without touching anything else.
 
-Same architecture can power:
-- A **terminal CLI** for daily briefings
+Same backend will power:
+- A **terminal CLI** that prints your daily briefing
 - A **menubar app** for breaking stories
 - A **mobile widget**
-- An **API** for other tools
+- An **API** for other tools to consume
 
-More sources, better filtering, smarter categorization coming. The goal: give you the news that matters, as fast as possible.
+More sources, sharper filtering, better categorization. All hardcoded, all mine.
 
-## Getting started
+## Run it
 
 ```bash
 git clone https://github.com/RehanMohammed985/Orbiter.git
@@ -59,9 +59,9 @@ node server.js
 # → http://localhost:3000
 ```
 
-## Tech
+## Stack
 
-- Node.js / Express backend
-- RSS + Hacker News API scraping
-- In-memory cache with 60s refresh
-- Zero-dependency frontend (single HTML file, all CSS/JS inline)
+- Node.js / Express
+- RSS + HN API scraping
+- In-memory cache, 60s refresh
+- Frontend: one HTML file, ~900 lines, all CSS/JS inlined, zero dependencies
