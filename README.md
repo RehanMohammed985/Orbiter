@@ -12,6 +12,99 @@ The space theme isn't decorative — it's the point. The black void, the driftin
 
 ## How it works
 
+```mermaid
+flowchart TB
+    subgraph Sources["Sources"]
+        HN["Hacker News API"]
+        TC["TechCrunch RSS"]
+        ARS["Ars Technica RSS"]
+        VRG["The Verge RSS"]
+        NYT["NYT Tech RSS"]
+    end
+
+    subgraph Server["Server (Node.js)"]
+        FETCH["Fetch All (60s interval)"]
+        FILTER["Relevance Filter (score ≥ 10)"]
+        CAT["Categorize (CS / AI / ML / Startups)"]
+        CACHE["In-Memory Cache"]
+        API["/api/news Endpoint"]
+    end
+
+    subgraph Client["Frontend (Single HTML File)"]
+        POLL["Poll every 10s"]
+        HERO["Breaking Hero Bar (score ≥ 20)"]
+        LIST["Day-Grouped Story List"]
+        PREVIEW["Hover Previews"]
+        STARS["Starfield + Meteors"]
+    end
+
+    HN --> FETCH
+    TC --> FETCH
+    ARS --> FETCH
+    VRG --> FETCH
+    NYT --> FETCH
+
+    FETCH --> FILTER
+    FILTER --> CAT
+    CAT --> CACHE
+    CACHE --> API
+    API --> POLL
+    POLL --> HERO
+    POLL --> LIST
+    LIST --> PREVIEW
+```
+
+```mermaid
+flowchart LR
+    subgraph Scoring["Relevance Scoring"]
+        DIRECTION[("~85 raw articles")]
+        COMP["Company Match (+10)"]
+        EVT["Event Match (+10)"]
+        AI["AI Model Match (+10)"]
+        EXCL["Exclusion Check (-20)"]
+        SCORE{"Score ≥ 10?"}
+        PASS["✅ Pass (~34 stories)"]
+        REJECT["❌ Rejected"]
+    end
+
+    DIRECTION --> COMP
+    DIRECTION --> EVT
+    DIRECTION --> AI
+    DIRECTION --> EXCL
+    COMP --> SCORE
+    EVT --> SCORE
+    AI --> SCORE
+    EXCL --> SCORE
+    SCORE -->|Yes| PASS
+    SCORE -->|No| REJECT
+    PASS --> MAJOR{"Score ≥ 20?"}
+    MAJOR -->|Yes| HERO["Breaking Hero Bar"]
+    MAJOR -->|No| LIST["Day-Grouped List"]
+```
+
+```mermaid
+sequenceDiagram
+    participant B as Browser
+    participant S as Server
+    participant HN as Hacker News API
+    participant RSS as RSS Feeds
+
+    Note over S: Every 60s
+    S->>HN: Fetch top 30 stories
+    S->>RSS: Fetch 15 each from 4 sources
+    HN-->>S: Stories
+    RSS-->>S: Articles
+    S->>S: Score & filter (≥10)
+    S->>S: Categorize & cache
+
+    Note over B,S: Every 10s
+    B->>S: GET /api/news
+    S-->>B: { articles, fetchedAt }
+    B->>B: Group by day
+    B->>B: Render list + hero bar
+    B->>B: Animate new items
+```
+
 - **5 sources** → ~85 raw articles → relevance filter → ~34 stories that pass
 - **10-second frontend polling** — near-instant delivery when something breaks
 - **60-second server cache refresh** — balanced against API rate limits
