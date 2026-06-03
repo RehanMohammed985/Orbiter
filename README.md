@@ -1,6 +1,6 @@
 # Orbiter
 
-I got tired of wading through listicles and deals to find the 3 tech stories that actually mattered. So I hardcoded this.
+I got tired of wading through listicles and deals to find the 3 tech stories that actually mattered. So I made this.
 
 ## Why
 
