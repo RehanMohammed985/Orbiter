@@ -6,8 +6,10 @@
   "scripts": {
     "start": "electron .",
     "dev": "node server.js",
-    "build": "electron-builder build --mac",
-    "dist": "electron-builder build --mac --publish never"
+    "vercel-dev": "vercel dev",
+    "electron:build": "electron-builder build --mac",
+    "electron:build:win": "electron-builder build --win",
+    "electron:dist": "electron-builder build --mac --publish never"
   },
   "build": {
     "appId": "com.orbiter.app",
@@ -25,8 +27,14 @@
       "category": "public.app-category.news",
       "icon": "electron/icon.png",
       "target": [
-        "dmg",
-        "zip"
+        "dmg"
+      ]
+    },
+    "win": {
+      "icon": "electron/icon.png",
+      "target": [
+        "nsis",
+        "portable"
       ]
     }
   },
