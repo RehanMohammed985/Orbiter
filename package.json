@@ -1,15 +1,43 @@
 {
-  "name": "news-dashboard",
+  "name": "orbiter",
   "version": "1.0.0",
   "description": "Clean news dashboard for CS/AI/ML/Startups",
-  "main": "server.js",
+  "main": "electron/main.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "electron .",
+    "dev": "node server.js",
+    "build": "electron-builder build --mac",
+    "dist": "electron-builder build --mac --publish never"
+  },
+  "build": {
+    "appId": "com.orbiter.app",
+    "productName": "Orbiter",
+    "files": [
+      "electron/**/*",
+      "public/**/*",
+      "scrapers/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "mac": {
+      "category": "public.app-category.news",
+      "icon": "electron/icon.png",
+      "target": [
+        "dmg",
+        "zip"
+      ]
+    }
   },
   "dependencies": {
     "express": "^4.18.2",
     "cors": "^2.8.5",
     "axios": "^1.6.0",
     "rss-parser": "^3.13.0"
+  },
+  "devDependencies": {
+    "electron": "^35.0.0",
+    "electron-builder": "^25.0.0"
   }
 }

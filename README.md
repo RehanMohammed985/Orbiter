@@ -1,67 +1,53 @@
 # Orbiter
 
-I got tired of wading through listicles and deals to find the 3 tech stories that actually mattered. So I made this.
+A macOS desktop app that delivers the tech stories that actually matter — no listicles, no deals, no noise. Pulls from HN, TechCrunch, Ars, The Verge, and NYT Tech, scores every story, and only shows what's relevant.
 
-## Why
+## Download
 
-Pulls from HN, TechCrunch, Ars, The Verge, NYT Tech. Every story gets scored — company mentions, event keywords, AI model names. Each hit adds 10 points. Listicle/deal/review keywords auto-reject at -20. Nothing passes unless it scores ≥ 10. That's the filter. Hardcoded, no exceptions.
+Grab the latest `.dmg` from the [Releases](https://github.com/RehanMohammed985/Orbiter/releases) page.
 
-I wanted near-instant delivery when something breaks. So the frontend polls every 10 seconds. Server refreshes every 60. Day-grouped layout. Breaking stories (score ≥ 20) get their own row at the top with hover summaries. All hardcoded into a single HTML file — zero dependencies, ready to drop into a macOS widget.
+1. Open `Orbiter-1.0.0-arm64.dmg`
+2. Drag **Orbiter** into **Applications**
+3. Right-click → **Open** (first launch only — macOS warning for unsigned apps)
+4. Orbiter lives in your menu bar. Click to show/hide the window. Quit from the menu bar icon to fully exit.
 
-## Pipeline
+> **Note:** The first launch takes a few seconds to fetch and load everything. After that, it caches data locally so subsequent launches are instant.
 
-```mermaid
-flowchart LR
-    S["Sources"] --> F["Fetch & Score"]
-    F --> C["Cache (60s)"]
-    C --> A["/api/news"]
-    A --> B["Browser (10s poll)"]
-    B --> H["Breaking Bar ≥20"]
-    B --> L["Day-Grouped List"]
-```
-
-**Scoring:** Each story gets +10 per signal (company mention, event keyword, AI model match). Exclusion keywords (deals, reviews, tutorials) auto-reject. Score ≥ 10 passes, ≥ 20 hits the breaking hero bar.
-
-```
-~85 raw → [company +10] [event +10] [AI model +10] [exclusion -20] → score ≥ 10? → ~34 relevant
-                                                                         ↓
-                                                                   ≥ 20? → Breaking bar
-                                                                   < 20? → Day-grouped list
-```
-
-- **5 sources** → ~85 raw → relevance filter → ~34 stories
-- **10s frontend polling** — near-instant delivery
-- **60s server cache refresh** — rate-limit friendly
-- **Auto-categorization** into CS / AI / ML / Startups
-- **Day-grouped layout** — "Today" / "Yesterday" / date headers
-- **Breaking hero bar** — score ≥ 20 stories get dedicated cards with hover previews
-- **Live indicator** — pulsing dot + timestamp so you know it's live
-
-## Next
-
-The entire frontend is one HTML file with everything inlined. I built it this way so I can drop it straight into Übersicht or a WidgetKit panel without touching anything else.
-
-Same backend will power:
-- A **terminal CLI** that prints your daily briefing
-- A **menubar app** for breaking stories
-- A **mobile widget**
-- An **API** for other tools to consume
-
-More sources, sharper filtering, better categorization. All hardcoded, all mine.
-
-## Run it
+## Build from source
 
 ```bash
 git clone https://github.com/RehanMohammed985/Orbiter.git
 cd Orbiter
 npm install
-node server.js
-# → http://localhost:3000
+
+# Run in development mode:
+npm start
+
+# Build distributable .dmg:
+npm run build
+# → dist/Orbiter-1.0.0-arm64.dmg
 ```
+
+## How it works
+
+**Scraping** — Fetches from HN (Firebase API) and 4 RSS feeds every 60 seconds. Each story gets scored: +10 per signal (company mention, event keyword, AI model name), auto-reject at -20 for listicles/deals/reviews. Score ≥ 10 passes, ≥ 20 hits the breaking hero bar.
+
+**Frontend** — A single HTML file with all CSS/JS inlined. Polls the server every 10 seconds. Day-grouped layout with breaking stories at top. Auto-categorizes into CS/AI/ML/Startups.
+
+**Desktop app** — Wrapped in Electron. Lives in the menu bar. Closing the window hides it (doesn't quit). Caches data to disk for instant startup.
 
 ## Stack
 
-- Node.js / Express
+- Node.js / Express (backend)
+- Electron (desktop wrapper)
 - RSS + HN API scraping
-- In-memory cache, 60s refresh
-- Frontend: one HTML file, ~900 lines, all CSS/JS inlined, zero dependencies
+- One HTML file frontend, zero JS/CSS dependencies
+
+## Pipeline
+
+```
+5 sources → ~85 raw → scoring → ≥ 10? → ~34 relevant
+                                         ↓
+                                   ≥ 20? → Breaking bar
+                                   < 20? → Day-grouped list
+```
